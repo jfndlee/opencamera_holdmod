@@ -109,7 +109,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
 	private final CameraControllerManager camera_controller_manager;
 	private CameraController camera_controller;
 	private boolean has_permissions = true; // whether we have permissions necessary to operate the camera (camera, storage); assume true until we've been denied one of them
-	private boolean is_video;
+	public static boolean is_video;
 	private volatile MediaRecorder video_recorder; // must be volatile for test project reading the state
 	private volatile boolean video_start_time_set; // must be volatile for test project reading the state
 	private long video_start_time; // when the video recording was started, or last resumed if it's was paused
@@ -3437,6 +3437,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
 
 	/** User has clicked the "take picture" button (or equivalent GUI operation).
 	 */
+
 	public void takePicturePressed() {
 		if( MyDebug.LOG )
 			Log.d(TAG, "takePicturePressed");
@@ -3472,9 +3473,9 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     	    		if( MyDebug.LOG )
     	    			Log.d(TAG, "ignore pressing stop video too quickly after start");
     			}
-    			else {
-    				stopVideo(false);
-    			}
+//    			else {
+//    				stopVideo(false);
+//    			}
     		}
     		else {
 	    		if( MyDebug.LOG )
@@ -3514,7 +3515,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
 	        }
 			remaining_burst_photos = n_burst-1;
 		}
-		
+
 		if( timer_delay == 0 ) {
 			takePicture(false);
 		}

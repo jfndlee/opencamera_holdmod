@@ -75,6 +75,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -133,6 +134,9 @@ public class MainActivity extends Activity implements AudioListener.AudioListene
 	public volatile boolean test_have_angle;
 	public volatile float test_angle;
 	public volatile String test_last_saved_image;
+
+	//ME
+	ImageButton btn_take;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -366,6 +370,34 @@ public class MainActivity extends Activity implements AudioListener.AudioListene
         		});
             }
         }).start();
+
+//ME
+		btn_take = (ImageButton) findViewById(R.id.take_photo);
+
+		btn_take.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+
+				switch(event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						if(Preview.is_video == true){
+							Log.d("HEHE","recoding video");
+							takePicture();
+						}
+						break;
+					case MotionEvent.ACTION_UP:
+						if(Preview.is_video == false){
+							Log.d("HEHE","take picture");
+							takePicture();
+						}else{
+							Log.d("HEHE","stop recoding video");
+							stop_video();
+						}
+						break;
+				}
+				return false;
+			}
+		});
 
 		if( MyDebug.LOG )
 			Log.d(TAG, "onCreate: total time for Activity startup: " + (System.currentTimeMillis() - debug_time));
@@ -818,12 +850,12 @@ public class MainActivity extends Activity implements AudioListener.AudioListene
 			Log.d(TAG, "waitUntilImageQueueEmpty");
         applicationInterface.getImageSaver().waitUntilDone();
     }
-    
-    public void clickedTakePhoto(View view) {
-		if( MyDebug.LOG )
-			Log.d(TAG, "clickedTakePhoto");
-    	this.takePicture();
-    }
+//    NO NEED
+//    public void clickedTakePhoto(View view) {
+//		if( MyDebug.LOG )
+//			Log.d(TAG, "clickedTakePhoto");
+//    	this.takePicture();
+//    }
 
 	public void clickedPauseVideo(View view) {
 		if( MyDebug.LOG )
@@ -1913,7 +1945,13 @@ public class MainActivity extends Activity implements AudioListener.AudioListene
 		applicationInterface.trashLastImage();
     }
 
-    public void takePicture() {
+	public void stop_video() {
+		Log.d("HEHE", "Stopping video");
+		closePopup();
+		this.preview.stopVideo(true);
+	}
+
+	public void takePicture() {
 		if( MyDebug.LOG )
 			Log.d(TAG, "takePicture");
 		closePopup();
